@@ -2,11 +2,12 @@
   "name": "semantic-release",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "https://github.com/manyumanchala-sureify/Semantic-release.git",
-  "author": "<manchala.manyu@sureify.com>",
   "license": "MIT",
   "scripts": {
     "release": "semantic-release"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
     "semantic-release": "^22.0.0",
@@ -15,6 +16,7 @@
     "@semantic-release/github": "^10.0.3",
     "@semantic-release/npm": "^10.0.4",
     "@semantic-release/commit-analyzer": "^10.0.2",
-    "@semantic-release/release-notes-generator": "^10.0.3"
+    "@semantic-release/release-notes-generator": "^10.0.3",
+    "conventional-changelog-conventionalcommits": "6.1.0"
   }
 }

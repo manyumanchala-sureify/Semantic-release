@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - develop
 
 jobs:
   release:
@@ -18,11 +19,42 @@ jobs:
           node-version: 20
           registry-url: "https://registry.npmjs.org/"
 
+      - name: Remove yarn.lock (if needed)
+        run: rm -f yarn.lock
+
+      - name: Remove any existing npmrc
+        run: |
+          rm -f ~/.npmrc
+          rm -f .npmrc
+
+      - name: Remove Yarn global config
+        run: rm -f ~/.yarnrc.yml
+
+      - name: Override Yarn registry
+        run: yarn config set npmRegistryServer "https://registry.npmjs.org/"
+
+      - name: Set up .npmrc
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
+      - name: Set NODE_AUTH_TOKEN
+        run: echo "NODE_AUTH_TOKEN=${{ secrets.NPM_TOKEN }}" >> $GITHUB_ENV
+
+      - name: Test npm authentication
+        run: npm whoami
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+
+
+      - name: Debug NPM Token
+        run: npm whoami || echo "Invalid token"
+
+      - name: Clear npm cache
+        run: npm cache clean --force
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-
       - name: Run Semantic Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx semantic-release
